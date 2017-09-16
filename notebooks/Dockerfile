@@ -5,7 +5,7 @@ RUN mkdir -p /notebooks/examples /notebooks/local
 # Deploy matplotlib's examples
 RUN mkdir -p /tmp \
 	&& curl -fsSL https://github.com/mrkn/pycall.rb/archive/master.tar.gz | tar -xzf - -C /tmp \
-	&& mv /tmp/pycall.rb-master/examples/notebooks /notebooks/examples/pycall.rb \
+	&& mv /tmp/pycall.rb-master/examples/notebooks /notebooks/examples \
         && rm -rf /tmp/pycall.rb-master
 
 # Install Tini
