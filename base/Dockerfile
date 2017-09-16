@@ -204,13 +204,13 @@ RUN pip3 install \
 
 RUN gem install  \
 	cztop \
-	iruby \
 	pry \
 	pry-doc \
-	awesome_print \
-	pycall \
-	numpy \
-	pandas \
-	matplotlib \
-	red-arrow
+	awesome_print
 
+RUN gem install iruby \
+	&& gem install pycall -v '1.0.2' \
+	&& gem install numpy \
+	&& gem install pandas \
+	&& gem install matplotlib \
+	&& gem install red-arrow
