@@ -182,7 +182,9 @@ RUN set -ex \
 		> /etc/apt/sources.list.d/zeromq.list \
 	&& curl -fsSL http://download.opensuse.org/repositories/home:zeromq:git-draft/xUbuntu_16.04/Release.key | apt-key add - \
 	&& apt-get update \
-	&& apt-get install -y --no-install-recommends libczmq-dev
+	&& apt-get install -y --no-install-recommends \
+		libopenblas-dev \
+		libczmq-dev
 
 RUN pip3 install \
 	jupyter \
@@ -213,4 +215,11 @@ RUN gem install iruby \
 	&& gem install numpy \
 	&& gem install pandas \
 	&& gem install matplotlib \
-	&& gem install red-arrow
+	&& gem install numo-narray \
+	&& gem install numo-linalg \
+	&& gem install nmatrix \
+	&& gem install nmatrix-lapacke \
+	&& gem install red-arrow \
+	&& gem install red-arrow-numo-narray \
+	&& gem install red-arrow-nmatrix \
+	&& gem install daru
