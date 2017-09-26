@@ -218,6 +218,7 @@ RUN pip3 install \
 	pyarrow \
 	tensorflow \
 	keras \
+	xgboost \
 	chainer
 
 RUN gem install  \

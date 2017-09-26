@@ -17,7 +17,7 @@ This docker image consists of minimal components for data science using Ruby.
   - numpy, pandas, matplotlib, scipy, seaborn, bokeh, plotly, holoviews,
     scikit-learn, scikit-image, sympy, gensim, nltk, cython, statsmodel,
     patsy, cloudpickle, dill, numba, xray, pyarrow, tensorflow, keras,
-    chainer
+    chainer, xgboost
 - Ruby stack
   - pry, iruby, pycall, numpy, pandas, matplotlib, numo-narray, numo-linalg, nmatrix, nmatrix-lapacke, red-arrow, red-arrow-numo-narray, red-arrow-nmatrix, daru, rbplotly
 
