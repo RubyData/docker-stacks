@@ -6,6 +6,12 @@ USER root
 
 ENV DEBIAN_FRONTEND noninteractive
 
+# Install Tini
+RUN wget --quiet https://github.com/krallin/tini/releases/download/v0.10.0/tini \
+	&& echo "1361527f39190a7338a0b434bd8c88ff7233ce7b9a4876f3315c22fce7eca1b0 *tini" | sha256sum -c - \
+	&& mv tini /usr/local/bin/tini \
+	&& chmod +x /usr/local/bin/tini
+
 ###############################################################
 # Apache Arrow (based on red-datat-tools/red-arrow/Dockerfile)
 ###############################################################
@@ -31,8 +37,8 @@ RUN mkdir -p /usr/local/etc \
 	} >> /usr/local/etc/gemrc
 
 ENV RUBY_MAJOR 2.4
-ENV RUBY_VERSION 2.4.1
-ENV RUBY_DOWNLOAD_SHA256 4fc8a9992de3e90191de369270ea4b6c1b171b7941743614cc50822ddc1fe654
+ENV RUBY_VERSION 2.4.2
+ENV RUBY_DOWNLOAD_SHA256 748a8980d30141bd1a4124e11745bb105b436fb1890826e0d2b9ea31af27f735
 ENV RUBYGEMS_VERSION 2.6.13
 
 # some of ruby's build scripts are written in ruby
@@ -195,14 +201,24 @@ RUN pip3 install \
 	matplotlib \
 	seaborn \
 	bokeh \
+	plotly \
 	holoviews \
 	scikit-learn \
+	scikit-image \
+	sympy \
 	gensim \
 	nltk \
+	cython \
 	statsmodels \
+	patsy \
+	cloudpickle \
+	dill \
+	numba \
 	xray \
 	pyarrow \
-	keras
+	tensorflow \
+	keras \
+	chainer
 
 RUN gem install  \
 	cztop \
@@ -222,4 +238,8 @@ RUN gem install iruby \
 	&& gem install red-arrow \
 	&& gem install red-arrow-numo-narray \
 	&& gem install red-arrow-nmatrix \
-	&& gem install daru
+	&& gem install daru \
+	&& gem install rbplotly
+
+ENTRYPOINT ["tini", "--"]
+CMD ["/bin/bash"]

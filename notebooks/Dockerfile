@@ -1,4 +1,4 @@
-FROM rubydata/pycall-base:latest
+FROM rubydata/base:latest
 
 RUN mkdir -p /notebooks/examples /notebooks/local
 
@@ -7,12 +7,6 @@ RUN mkdir -p /tmp \
 	&& curl -fsSL https://github.com/mrkn/pycall.rb/archive/master.tar.gz | tar -xzf - -C /tmp \
 	&& mv /tmp/pycall.rb-master/examples/notebooks /notebooks/examples \
         && rm -rf /tmp/pycall.rb-master
-
-# Install Tini
-RUN wget --quiet https://github.com/krallin/tini/releases/download/v0.10.0/tini \
-	&& echo "1361527f39190a7338a0b434bd8c88ff7233ce7b9a4876f3315c22fce7eca1b0 *tini" | sha256sum -c - \
-	&& mv tini /usr/local/bin/tini \
-	&& chmod +x /usr/local/bin/tini
 
 ENV SHELL=/bin/bash \
     NB_USER=jovyan \
