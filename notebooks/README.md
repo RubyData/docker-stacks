@@ -15,7 +15,7 @@ This docker image provides Jupyter Notebook environment with Ruby's data science
 The following command starts a container with the Notebook server listening for HTTP connections on port 8888 with a randomly generated authentication token configured.
 
 ```
-docker run -it --rm -p 8888:8888 rubydata/notebook
+docker run -it --rm -p 8888:8888 rubydata/notebooks
 ```
 
 Take note of the authentication token included in the notebook startup log message.  Include it in the URL you visit to access the Notebook server or enter it in the Notebook login form.
@@ -27,19 +27,19 @@ The Docker container executes a [`start-notebook.sh`]() script by default.  The 
 You can pass [Jupyter command line options]() through the `start-notebook.sh` script when launching the container.  For example, to secure the Notebook server with a custom password hashed using `IPython.lib.password()` instead of the default token, run the following:
 
 ```
-docker run -d -p 8888:8888 rubydata/notebook start-notebook.sh --NotebookApp.password='sha1:74ba40f8a388:c913541b7ee99d15d5ed31d4226bf7838f83a50e'
+docker run -d -p 8888:8888 rubydata/notebooks start-notebook.sh --NotebookApp.password='sha1:74ba40f8a388:c913541b7ee99d15d5ed31d4226bf7838f83a50e'
 ```
 
 For example, to set the base URL of the notebook server, run the following:
 
 ```
-docker run -d -p 8888:8888 rubydata/notebook start-notebook.sh --NotebookApp.base_url=/some/path
+docker run -d -p 8888:8888 rubydata/notebooks start-notebook.sh --NotebookApp.base_url=/some/path
 ```
 
 For example, to disable all authentication mechanisms (not a recommended practice):
 
 ```
-docker run -d -p 8888:8888 rubydata/notebook start-notebook.sh --NotebookApp.token=''
+docker run -d -p 8888:8888 rubydata/notebooks start-notebook.sh --NotebookApp.token=''
 ```
 
 You can sidestep the `start-notebook.sh` script and run your own commands in the container.  See the _Alternative Commands_ section later in this document for more information.
@@ -61,13 +61,13 @@ You may customize the execution of the Docker container and the command it is ru
 The `start.sh` script supports the same features as the default `start-notebook.sh` script (e.g., `GRANT_SUDO`), but allows you to specify an arbitrary command to execute.  For example, to run the text-based `iruby` console in a container, do the following:
 
 ```
-docker run -it --rm rubydata/notebook start.sh iruby
+docker run -it --rm rubydata/notebooks start.sh iruby
 ```
 
 Or, to run JupyterLab instead of the classic notebook, run the following:
 
 ```
-docker run -it --rm -p 8888:8888 rubydata/notebook start.sh jupyter lab
+docker run -it --rm -p 8888:8888 rubydata/notebooks start.sh jupyter lab
 ```
 
 This script is particularly useful when you derive a new Dockefile from this image and install additional Jupyter applications with subcommands like `jupyter console`, `jupyter kernelgateway`, etc.
