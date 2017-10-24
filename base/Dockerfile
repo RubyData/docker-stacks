@@ -18,12 +18,19 @@ RUN wget --quiet https://github.com/krallin/tini/releases/download/v0.10.0/tini 
 
 RUN set -ex \
 	&& apt-get update \
+	&& apt install -y --no-install-recommends \
+		apt-transport-https \
+		lsb-release \
+	&& { \
+		echo "deb https://packages.red-data-tools.org/ubuntu/ $(lsb_release --codename --short) universe"; \
+		echo "deb-src https://packages.red-data-tools.org/ubuntu/ $(lsb_release --codename --short) universe"; \
+	} >> /etc/apt/sources.list.d/red-data-tools.list \
+	&& apt update --allow-insecure-repositories || apt update \
+	&& apt install -y --allow-unauthenticated red-data-tools-keyring \
+	&& apt update \
 	&& apt-get install -y --no-install-recommends \
-		software-properties-common \
-	&& add-apt-repository -y ppa:groonga/ppa \              
-	&& apt-get update \
-	&& apt-get install -y --no-install-recommends \
-		libarrow-glib-dev
+		libarrow-glib-dev \
+		libparquet-glib-dev
 
 ###############################################################
 # Ruby based on docker-library/ruby
