@@ -17,7 +17,7 @@ RUN wget --quiet https://github.com/krallin/tini/releases/download/v0.10.0/tini 
 ###############################################################
 
 RUN set -ex \
-	&& apt-get update \
+	&& apt update \
 	&& apt install -y --no-install-recommends \
 		apt-transport-https \
 		lsb-release \
@@ -28,7 +28,7 @@ RUN set -ex \
 	&& apt update --allow-insecure-repositories || apt update \
 	&& apt install -y --allow-unauthenticated red-data-tools-keyring \
 	&& apt update \
-	&& apt-get install -y --no-install-recommends \
+	&& apt install -y --no-install-recommends \
 		libarrow-glib-dev \
 		libparquet-glib-dev
 
