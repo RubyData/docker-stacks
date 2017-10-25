@@ -246,6 +246,7 @@ RUN gem install iruby \
 	&& gem install red-arrow \
 	&& gem install red-arrow-numo-narray \
 	&& gem install red-arrow-nmatrix \
+	&& gem install red-parquet \
 	&& gem install daru \
 	&& gem install rbplotly
 
