@@ -234,7 +234,7 @@ RUN gem install  \
 	awesome_print
 
 RUN gem install iruby \
-	&& gem install pycall -v '1.0.2' \
+	&& gem install pycall -v '1.0.3' \
 	&& gem install numpy \
 	&& gem install pandas \
 	&& gem install matplotlib \
