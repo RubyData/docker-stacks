@@ -247,6 +247,8 @@ RUN gem install iruby \
 	&& gem install red-arrow-nmatrix \
 	&& gem install red-parquet \
 	&& gem install daru \
+	&& gem install spreadsheet \
+	&& gem install mechanize \
 	&& gem install rbplotly
 
 ENTRYPOINT ["tini", "--"]
