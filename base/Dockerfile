@@ -196,6 +196,7 @@ RUN set -ex \
 	&& apt-get update \
 	&& apt-get install -y --no-install-recommends \
 		libopenblas-dev \
+		liblapacke-dev \
 		libczmq-dev
 
 RUN pip3 install \
