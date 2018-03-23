@@ -203,34 +203,8 @@ RUN set -ex \
 		postgresql-client libpq-dev \
 		libczmq-dev
 
-RUN pip3 install \
-	jupyter \
-	ipykernel \
-	numpy \
-	scipy \
-	pandas \
-	matplotlib \
-	seaborn \
-	bokeh \
-	plotly \
-	holoviews \
-	scikit-learn \
-	scikit-image \
-	sympy \
-	gensim \
-	nltk \
-	cython \
-	statsmodels \
-	patsy \
-	cloudpickle \
-	dill \
-	numba \
-	xray \
-	pyarrow \
-	tensorflow \
-	keras \
-	xgboost \
-	chainer
+ADD requirements.txt /tmp
+RUN pip3 install -r /tmp/requirements.txt && rm -f /tmp/requirements.txt
 
 RUN gem install  \
 	cztop \
