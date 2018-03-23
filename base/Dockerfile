@@ -197,6 +197,10 @@ RUN set -ex \
 	&& apt-get install -y --no-install-recommends \
 		libopenblas-dev \
 		liblapacke-dev \
+		libczmq-dev \
+		sqlite3 libsqlite3-dev \
+		mysql-client libmysqlclient-dev \
+		postgresql-client libpq-dev \
 		libczmq-dev
 
 RUN pip3 install \
@@ -250,7 +254,11 @@ RUN gem install iruby \
 	&& gem install daru \
 	&& gem install spreadsheet \
 	&& gem install mechanize \
-	&& gem install rbplotly
+	&& gem install rbplotly \
+	&& gem install activerecord \
+	&& gem install sqlite3 \
+	&& gem install mysql2 \
+	&& gem install pg
 
 ENTRYPOINT ["tini", "--"]
 CMD ["/bin/bash"]
