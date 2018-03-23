@@ -1,6 +1,6 @@
 jupyter==1.0.0
 jupyterlab==0.31.12
-numpy==1.14.2
+numpy==1.13.3  # mxnet requires numpy <= 1.13.3
 cython==0.28.1
 scipy==1.0.0
 statsmodels==0.8.0
@@ -29,4 +29,5 @@ pyarrow==0.8.0
 tensorflow==1.6.0
 keras==2.1.5
 xgboost==0.7.post3
+mxnet==1.1.0
 chainer==3.5.0
