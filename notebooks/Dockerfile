@@ -1,11 +1,11 @@
 FROM rubydata/base:latest
 
-RUN mkdir -p /notebooks/examples /notebooks/local
+RUN mkdir -p /notebooks/examples
 
 # Deploy matplotlib's examples
 RUN mkdir -p /tmp \
 	&& curl -fsSL https://github.com/mrkn/pycall.rb/archive/master.tar.gz | tar -xzf - -C /tmp \
-	&& mv /tmp/pycall.rb-master/examples/notebooks /notebooks/examples \
+	&& mv /tmp/pycall.rb-master/examples/notebooks/* /notebooks/examples \
         && rm -rf /tmp/pycall.rb-master
 
 ENV SHELL=/bin/bash \
