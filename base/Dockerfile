@@ -1,6 +1,6 @@
 FROM buildpack-deps:xenial
 
-MAINTAINER Kenta Murata <mrkn@mrkn.jp>
+LABEL maintainer "Kenta Murata <mrkn@mrkn.jp>"
 
 USER root
 
