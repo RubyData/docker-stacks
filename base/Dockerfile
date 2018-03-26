@@ -206,6 +206,16 @@ RUN set -ex \
 ADD requirements.txt /tmp
 RUN pip3 install -r /tmp/requirements.txt && rm -f /tmp/requirements.txt
 
+RUN apt-get update \
+	&& apt-get install -y --no-install-recommends nodejs npm \
+	&& npm install -g n \
+	&& n latest \
+	&& apt-get purge -y nodejs npm \
+	&& apt-get autoremove -y
+RUN jupyter labextension install @jupyterlab/plotly-extension \
+	&& jupyter labextension install jupyterlab_bokeh \
+	&& jupyter lab build
+
 RUN gem install  \
 	cztop \
 	pry \
