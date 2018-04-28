@@ -44,10 +44,10 @@ RUN mkdir -p /usr/local/etc \
 	} >> /usr/local/etc/gemrc
 
 ENV RUBY_MAJOR 2.5
-ENV RUBY_VERSION 2.5.0
-ENV RUBY_DOWNLOAD_SHA256 1da0afed833a0dab94075221a615c14487b05d0c407f991c8080d576d985b49b
-ENV RUBYGEMS_VERSION 2.7.4
-ENV BUNDLER_VERSION 1.16.0
+ENV RUBY_VERSION 2.5.1
+ENV RUBY_DOWNLOAD_SHA256 886ac5eed41e3b5fc699be837b0087a6a5a3d10f464087560d2d21b3e71b754d
+ENV RUBYGEMS_VERSION 2.7.6
+ENV BUNDLER_VERSION 1.16.1
 
 # some of ruby's build scripts are written in ruby
 #   we purge system ruby later to make sure our final image uses what we just built
@@ -123,10 +123,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	&& rm -rf /var/lib/apt/lists/*
 
 ENV GPG_KEY 0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
-ENV PYTHON_VERSION 3.6.4
+ENV PYTHON_VERSION 3.6.5
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION 9.0.3
+ENV PYTHON_PIP_VERSION 10.0.1
 
 RUN set -ex \
 	&& buildDeps=' \
@@ -227,7 +227,7 @@ RUN gem install iruby \
 	&& gem install numpy \
 	&& gem install pandas \
 	&& gem install matplotlib \
-	&& gem install numo-narray -v '0.9.1.0' \
+	&& gem install numo-narray -v '0.9.1.2' \
 	&& gem install numo-linalg \
 	&& gem install nmatrix \
 	&& gem install nmatrix-lapacke \
