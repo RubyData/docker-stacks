@@ -236,7 +236,7 @@ RUN gem install iruby \
 	&& gem install red-arrow-nmatrix \
 	&& gem install red-parquet \
 	&& gem install red-datasets \
-	&& gem install red-chainer \
+	&& gem install red-chainer -v '0.3.1' \
 	&& gem install daru \
 	&& gem install spreadsheet \
 	&& gem install mechanize \
