@@ -1,4 +1,4 @@
-FROM buildpack-deps:xenial
+FROM rubylang/ruby
 
 LABEL maintainer "Kenta Murata <mrkn@mrkn.jp>"
 
@@ -6,14 +6,31 @@ USER root
 
 ENV DEBIAN_FRONTEND noninteractive
 
-# Install Tini
-RUN wget --quiet https://github.com/krallin/tini/releases/download/v0.10.0/tini \
+###############################################################
+# Prerequisites
+###############################################################
+
+RUN set -ex \
+	&& apt update \
+	&& apt install -y --no-install-recommends \
+		build-essential \
+		curl \
+		gnupg \
+		sqlite3 \
+		libsqlite3-dev
+
+###############################################################
+# Tini
+###############################################################
+
+RUN set -ex \
+	&& curl -sfSL -O https://github.com/krallin/tini/releases/download/v0.10.0/tini \
 	&& echo "1361527f39190a7338a0b434bd8c88ff7233ce7b9a4876f3315c22fce7eca1b0 *tini" | sha256sum -c - \
 	&& mv tini /usr/local/bin/tini \
 	&& chmod +x /usr/local/bin/tini
 
 ###############################################################
-# Apache Arrow (based on red-datat-tools/red-arrow/Dockerfile)
+# Apache Arrow
 ###############################################################
 
 RUN set -ex \
@@ -21,15 +38,21 @@ RUN set -ex \
 	&& apt install -y --no-install-recommends \
 		apt-transport-https \
 		lsb-release \
+	&& curl -sfSL -o /usr/share/keyrings/apache-arrow-keyring.gpg \
+		https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/apache-arrow-keyring.gpg \
 	&& { \
-		echo "deb https://packages.red-data-tools.org/ubuntu/ $(lsb_release --codename --short) universe"; \
-		echo "deb-src https://packages.red-data-tools.org/ubuntu/ $(lsb_release --codename --short) universe"; \
-	} >> /etc/apt/sources.list.d/red-data-tools.list \
-	&& apt update --allow-insecure-repositories || apt update \
-	&& apt install -y --allow-unauthenticated red-data-tools-keyring \
+		echo "deb [arch=amd64 signed-by=/usr/share/keyrings/apache-arrow-keyring.gpg] https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/ $(lsb_release --codename --short) main"; \
+		echo "deb-src [signed-by=/usr/share/keyrings/apache-arrow-keyring.gpg] https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/ $(lsb_release --codename --short) main"; \
+           } >> /etc/apt/sources.list.d/apache-arrow.list \
 	&& apt update \
 	&& apt install -y --no-install-recommends \
+		libarrow-dev \
 		libarrow-glib-dev \
+		libplasma-dev \
+		libplasma-glib-dev \
+		libgandiva-dev \
+		libgandiva-glib-dev \
+		libparquet-dev \
 		libparquet-glib-dev
 
 ###############################################################
@@ -43,67 +66,16 @@ RUN mkdir -p /usr/local/etc \
 		echo 'update: --no-document'; \
 	} >> /usr/local/etc/gemrc
 
-ENV RUBY_MAJOR 2.5
-ENV RUBY_VERSION 2.5.1
-ENV RUBY_DOWNLOAD_SHA256 886ac5eed41e3b5fc699be837b0087a6a5a3d10f464087560d2d21b3e71b754d
-ENV RUBYGEMS_VERSION 2.7.6
-ENV BUNDLER_VERSION 1.16.1
-
-# some of ruby's build scripts are written in ruby
-#   we purge system ruby later to make sure our final image uses what we just built
-RUN set -ex \
-	\
-	&& buildDeps=' \
-		bison \
-		libgdbm-dev \
-		ruby \
-	' \
-	&& apt-get update \
-	&& apt-get install -y --no-install-recommends $buildDeps \
-	&& rm -rf /var/lib/apt/lists/* \
-	\
-	&& wget -O ruby.tar.xz "https://cache.ruby-lang.org/pub/ruby/${RUBY_MAJOR%-rc}/ruby-$RUBY_VERSION.tar.xz" \
-	&& echo "$RUBY_DOWNLOAD_SHA256 *ruby.tar.xz" | sha256sum -c - \
-	\
-	&& mkdir -p /usr/src/ruby \
-	&& tar -xJf ruby.tar.xz -C /usr/src/ruby --strip-components=1 \
-	&& rm ruby.tar.xz \
-	\
-	&& cd /usr/src/ruby \
-	\
-# hack in "ENABLE_PATH_CHECK" disabling to suppress:
-#   warning: Insecure world writable dir
-	&& { \
-		echo '#define ENABLE_PATH_CHECK 0'; \
-		echo; \
-		cat file.c; \
-	} > file.c.new \
-	&& mv file.c.new file.c \
-	\
-	&& autoconf \
-	&& ./configure --disable-install-doc --enable-shared \
-	&& make -j"$(nproc)" \
-	&& make install \
-	\
-	&& apt-get purge -y --auto-remove $buildDeps \
-	&& cd / \
-	&& rm -r /usr/src/ruby \
-	\
-	&& gem update --system "$RUBYGEMS_VERSION"
-
-RUN gem install --force bundler --version "$BUNDLER_VERSION"
-
 # install things globally, for great justice
 # and don't create ".bundle" in all our apps
 ENV GEM_HOME /usr/local/bundle
 ENV BUNDLE_PATH="$GEM_HOME" \
-	BUNDLE_BIN="$GEM_HOME/bin" \
-	BUNDLE_SILENCE_ROOT_WARNING=1 \
-	BUNDLE_APP_CONFIG="$GEM_HOME"
+    BUNDLE_BIN="$GEM_HOME/bin" \
+    BUNDLE_SILENCE_ROOT_WARNING=1 \
+    BUNDLE_APP_CONFIG="$GEM_HOME"
 ENV PATH $BUNDLE_BIN:$PATH
 RUN mkdir -p "$GEM_HOME" "$BUNDLE_BIN" \
 	&& chmod 777 "$GEM_HOME" "$BUNDLE_BIN"
-
 
 ###############################################################
 # Python based on docker-library/python
@@ -123,10 +95,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	&& rm -rf /var/lib/apt/lists/*
 
 ENV GPG_KEY 0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
-ENV PYTHON_VERSION 3.6.5
+ENV PYTHON_VERSION 3.7.2
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION 10.0.1
+ENV PYTHON_PIP_VERSION 19.0.3
 
 RUN set -ex \
 	&& buildDeps=' \
@@ -135,10 +107,10 @@ RUN set -ex \
 	' \
 	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends && rm -rf /var/lib/apt/lists/* \
 	\
-	&& wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz" \
-	&& wget -O python.tar.xz.asc "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz.asc" \
+	&& curl -sfSL -o python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz" \
+	&& curl -sfSL -o python.tar.xz.asc "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz.asc" \
 	&& export GNUPGHOME="$(mktemp -d)" \
-	&& gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$GPG_KEY" \
+	&& gpg --keyserver ipv4.pool.sks-keyservers.net --recv-keys "$GPG_KEY" \
 	&& gpg --batch --verify python.tar.xz.asc python.tar.xz \
 	&& rm -r "$GNUPGHOME" python.tar.xz.asc \
 	&& mkdir -p /usr/src/python \
@@ -155,7 +127,7 @@ RUN set -ex \
 	\
 # explicit path to "pip3" to ensure distribution-provided "pip3" cannot interfere
 	&& if [ ! -e /usr/local/bin/pip3 ]; then : \
-		&& wget -O /tmp/get-pip.py 'https://bootstrap.pypa.io/get-pip.py' \
+		&& curl -sfSL -o /tmp/get-pip.py 'https://bootstrap.pypa.io/get-pip.py' \
 		&& python3 /tmp/get-pip.py "pip==$PYTHON_PIP_VERSION" \
 		&& rm /tmp/get-pip.py \
 	; fi \
@@ -186,13 +158,10 @@ RUN cd /usr/local/bin \
 
 
 ###############################################################
-# pycall
+# Extra things
 ###############################################################
 
 RUN set -ex \
-	&& echo 'deb http://download.opensuse.org/repositories/home:/zeromq:/git-draft/xUbuntu_16.04/ /' \
-		> /etc/apt/sources.list.d/zeromq.list \
-	&& curl -fsSL http://download.opensuse.org/repositories/home:zeromq:git-draft/xUbuntu_16.04/Release.key | apt-key add - \
 	&& apt-get update \
 	&& apt-get install -y --no-install-recommends \
 		libopenblas-dev \
@@ -200,8 +169,7 @@ RUN set -ex \
 		libczmq-dev \
 		sqlite3 libsqlite3-dev \
 		mysql-client libmysqlclient-dev \
-		postgresql-client libpq-dev \
-		libczmq-dev
+		postgresql-client libpq-dev
 
 ADD requirements.txt /tmp
 RUN pip3 install -r /tmp/requirements.txt && rm -f /tmp/requirements.txt
@@ -217,7 +185,7 @@ RUN jupyter labextension install @jupyterlab/plotly-extension \
 	&& jupyter lab build
 
 RUN gem install  \
-	cztop \
+	ffi-rzmq \
 	pry \
 	pry-doc \
 	awesome_print
