@@ -58,6 +58,6 @@ else
     echo 'Container must be run as root to grant sudo permissions'
   fi
   # Exec the command
-  echo "Execute the command: $*"
-  exec $*
+  echo "Execute the command: $@"
+  exec "$@"
 fi

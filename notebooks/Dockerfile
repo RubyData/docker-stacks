@@ -10,8 +10,8 @@ RUN mkdir -p /tmp \
 
 ENV SHELL=/bin/bash \
     NB_USER=jovyan \
-    NB_UID=1000 \
-    NB_GID=100 \
+    NB_UID=1001 \
+    NB_GID=101 \
     LC_ALL=en_US.UTF-8 \
     LANG=en_US.UTF-8 \
     LANGUAGE=en_US.UTF-8
@@ -32,7 +32,7 @@ USER root
 EXPOSE 8888
 WORKDIR $HOME
 
-ENTRYPOINT ["tini", "--"]
+ENTRYPOINT ["tini", "-g", "--"]
 CMD ["start-notebook.sh"]
 
 COPY start.sh /usr/local/bin/
