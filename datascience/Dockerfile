@@ -108,9 +108,9 @@ COPY --from=rubylang/ruby:2.6.2-bionic \
 USER $NB_UID
 
 RUN echo "gem: --user-install" >> $HOME/.gemrc
-
 ENV PATH $HOME/.gem/ruby/2.6.0/bin:$PATH
 
+# Install gems
 RUN gem install \
         activerecord \
         awesome_print \
