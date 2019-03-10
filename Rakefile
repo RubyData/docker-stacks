@@ -1,7 +1,7 @@
 OWNER = 'rubydata'.freeze
 ALL_IMAGES = %w[
-  base
-  notebooks
+  minimal
+  datascience
 ].each(&:freeze).freeze
 
 DOCKER_FLAGS = ENV['DOCKER_FLAGS']
