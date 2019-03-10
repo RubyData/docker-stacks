@@ -14,8 +14,11 @@ RUN apt-get update && \
             libffi-dev \
             libgdbm-dev \
             libgmp-dev \
+            liblapacke-dev \
+            libmysqlclient-dev \
             libncurses5-dev \
             libopenblas-dev \
+            libpq-dev \
             libreadline-dev \
             libsqlite3-dev \
             libssl-dev \
@@ -23,9 +26,38 @@ RUN apt-get update && \
             libxslt1-dev \
             libyaml-dev \
             libzmq3-dev \
+            mysql-client \
+            pkg-config \
+            postgresql-client \
             sqlite3 \
             tzdata \
             zlib1g-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+# Apache Arrow
+
+RUN apt update && \
+    apt install -y --no-install-recommends \
+        apt-transport-https \
+        lsb-release && \
+    curl -sfSL -o /usr/share/keyrings/apache-arrow-keyring.gpg \
+         https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/apache-arrow-keyring.gpg \
+    && { \
+        echo "deb [arch=amd64 signed-by=/usr/share/keyrings/apache-arrow-keyring.gpg] https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/ $(lsb_release --codename --short) main"; \
+        echo "deb-src [signed-by=/usr/share/keyrings/apache-arrow-keyring.gpg] https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/ $(lsb_release --codename --short) main"; \
+    } >> /etc/apt/sources.list.d/apache-arrow.list && \
+    apt update && \
+    apt install -y --no-install-recommends \
+        libarrow-dev \
+        libarrow-glib-dev \
+        libplasma-dev \
+        libplasma-glib-dev \
+        libgandiva-dev \
+        libgandiva-glib-dev \
+        libparquet-dev \
+        libparquet-glib-dev \
+        libgirepository1.0-dev \
+        && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy Ruby 2.6.2 from rubylang/ruby
@@ -80,14 +112,27 @@ RUN echo "gem: --user-install" >> $HOME/.gemrc
 ENV PATH $HOME/.gem/ruby/2.6.0/bin:$PATH
 
 RUN gem install \
-        iruby \
-        ffi-rzmq \
+        activerecord \
+        awesome_print \
         daru \
+        ffi-rzmq \
+        iruby \
+        matplotlib \
+        mysql2 \
+        numpy \
         numo-narray \
         numo-linalg \
-        pycall \
-        numpy \
         pandas \
-        matplotlib \
+        pg \
+        pry \
+        pry-doc \
+        pycall \
+        red-arrow \
+        red-arrow-numo-narray \
+        red-arrow-nmatrix \
+        red-parquet \
+        red-datasets \
+        red-chainer \
+        sqlite3 \
     \
     && iruby register
