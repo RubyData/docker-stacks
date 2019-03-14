@@ -9,6 +9,7 @@ USER root
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
             ca-certificates \
+            curl \
             gcc \
             libczmq-dev \
             libffi-dev \
