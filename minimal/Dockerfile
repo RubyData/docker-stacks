@@ -1,5 +1,5 @@
 ARG BASE_IMAGE_TAG=7db1bd2a7511
-FROM jupyter/datascience-notebook:$BASE_IMAGE_TAG
+FROM jupyter/scipy-notebook:$BASE_IMAGE_TAG
 
 LABEL maintainer="Kenta Murata <mrkn@mrkn.jp>"
 
@@ -110,15 +110,18 @@ USER $NB_UID
 RUN echo "gem: --user-install" >> $HOME/.gemrc
 ENV PATH $HOME/.gem/ruby/2.6.0/bin:$PATH
 
-# Install gems
+# Install basic gems
 RUN gem install \
         activerecord \
         awesome_print \
         daru \
+        daru-view \
         ffi-rzmq \
         iruby \
         matplotlib \
         mysql2 \
+        nmatrix \
+        nmatrix-lapacke \
         numpy \
         numo-narray \
         numo-linalg \
@@ -127,12 +130,15 @@ RUN gem install \
         pry \
         pry-doc \
         pycall \
+        rbplotly \
         red-arrow \
         red-arrow-numo-narray \
         red-arrow-nmatrix \
-        red-parquet \
-        red-datasets \
         red-chainer \
+        red-datasets \
+        red-gandiva \
+        red-parquet \
+        red-plasma \
         sqlite3 \
     \
     && iruby register
