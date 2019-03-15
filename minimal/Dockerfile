@@ -141,5 +141,7 @@ RUN gem install \
         red-parquet \
         red-plasma \
         sqlite3 \
+    && gem install \
+           charty --pre \
     \
     && iruby register
