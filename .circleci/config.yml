@@ -16,13 +16,18 @@ jobs:
           command: docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
       - run:
           name: Build and push Docker image
+          command: docker build -t ${IMAGE_NAME}:latest minimal
+      - deploy:
           command: |
             rev=${CIRCLE_SHA1:0:12}
-            echo "Revision: $rev"
-            docker build -t ${IMAGE_NAME}:latest minimal
-            docker tag ${IMAGE_NAME}:latest ${IMAGE_NAME}:${rev}
-            docker push ${IMAGE_NAME}:${rev}
-            docker push ${IMAGE_NAME}:latest
+            if [ "$CIRCLE_BRANCH" = "master" ]; then
+              echo "Push ${IMAGE_NAME}:latest and ${IMAGE_NAME}:${rev}"
+              docker tag ${IMAGE_NAME}:latest ${IMAGE_NAME}:${rev}
+              docker push ${IMAGE_NAME}:${rev}
+              docker push ${IMAGE_NAME}:latest
+            else
+              echo "Don't push ${IMAGE_NAME}:latest and ${IMAGE_NAME}:${rev} on the branch other than master"
+            fi
 
   build_datascience:
     docker:
@@ -39,13 +44,18 @@ jobs:
           command: docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
       - run:
           name: Build and push Docker image
+          command: docker build -t ${IMAGE_NAME}:latest minimal
+      - deploy:
           command: |
             rev=${CIRCLE_SHA1:0:12}
-            echo "Revision: $rev"
-            docker build -t ${IMAGE_NAME}:latest minimal
-            docker tag ${IMAGE_NAME}:latest ${IMAGE_NAME}:${rev}
-            docker push ${IMAGE_NAME}:${rev}
-            docker push ${IMAGE_NAME}:latest
+            if [ "$CIRCLE_BRANCH" = "master" ]; then
+              echo "Push ${IMAGE_NAME}:latest and ${IMAGE_NAME}:${rev}"
+              docker tag ${IMAGE_NAME}:latest ${IMAGE_NAME}:${rev}
+              docker push ${IMAGE_NAME}:${rev}
+              docker push ${IMAGE_NAME}:latest
+            else
+              echo "Don't push ${IMAGE_NAME}:latest and ${IMAGE_NAME}:${rev} on the branch other than master"
+            fi
 
 workflows:
   version: 2
