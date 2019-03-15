@@ -4,31 +4,52 @@ jobs:
   build_minimal:
     docker:
       - image: circleci/ruby:2.6.1
+    environment:
+      IMAGE_NAME: rubydata/minimal-notebook
+      BUILD_CONTEXT: minimal
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
           docker_layer_caching: true
+      - run:
+          name: Docker Login
+          command: docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
       - run:
           name: Build and push Docker image
           command: |
-            docker build -t rubydata/minimal-notebook:latest minimal
-            rev=`git rev-parse HEAD`
-            docker tag rubydata/minimal-notebook:latest rubydata/minimal-notebook:${rev}
-            docker push rubydata/minimal-notebook:${rev}
-            docker push rubydata/minimal-notebook:latest
+            rev=${CIRCLE_SHA1:0:12}
+            echo "Revision: $rev"
+            docker build -t ${IMAGE_NAME}:latest minimal
+            docker tag ${IMAGE_NAME}:latest ${IMAGE_NAME}:${rev}
+            docker push ${IMAGE_NAME}:${rev}
+            docker push ${IMAGE_NAME}:latest
 
   build_datascience:
     docker:
       - image: circleci/ruby:2.6.1
+    environment:
+      IMAGE_NAME: rubydata/datascience-notebook
+      BUILD_CONTEXT: datascience
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
           docker_layer_caching: true
+      - run:
+          name: Docker Login
+          command: docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
       - run:
           name: Build and push Docker image
           command: |
-            docker build -t rubydata/datascience:latest datascience
-            rev=`git rev-parse HEAD`
-            docker tag rubydata/datascience-notebook:latest rubydata/datascience-notebook:${rev}
-            docker push rubydata/datascience-notebook:${rev}
-            docker push rubydata/datascience-notebook:latest
+            rev=${CIRCLE_SHA1:0:12}
+            echo "Revision: $rev"
+            docker build -t ${IMAGE_NAME}:latest minimal
+            docker tag ${IMAGE_NAME}:latest ${IMAGE_NAME}:${rev}
+            docker push ${IMAGE_NAME}:${rev}
+            docker push ${IMAGE_NAME}:latest
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build_minimal
+      - build_datascience
