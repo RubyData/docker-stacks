@@ -137,6 +137,8 @@ RUN gem install \
         red-arrow-nmatrix \
         red-chainer \
         red-datasets \
+        red-datasets-arrow \
+        red-datasets-daru \
         red-gandiva \
         red-parquet \
         red-plasma \
