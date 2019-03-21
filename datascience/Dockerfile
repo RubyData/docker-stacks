@@ -135,6 +135,7 @@ RUN gem install \
         red-arrow \
         red-arrow-numo-narray \
         red-arrow-nmatrix \
+        red-arrow-pycall \
         red-chainer \
         red-datasets \
         red-datasets-arrow \
