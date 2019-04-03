@@ -142,8 +142,9 @@ RUN gem install \
         red-gandiva \
         red-parquet \
         red-plasma \
+        rumale \
         sqlite3 \
-    && gem install \
-           charty --pre \
+    && gem install --pre \
+           charty \
     \
     && iruby register
