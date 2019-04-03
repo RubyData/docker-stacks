@@ -1,4 +1,4 @@
-ARG BASE_IMAGE_TAG=185a9f74b296
+ARG BASE_IMAGE_TAG=65761486d5d3
 FROM jupyter/datascience-notebook:$BASE_IMAGE_TAG
 
 LABEL maintainer="Kenta Murata <mrkn@mrkn.jp>"
@@ -142,8 +142,9 @@ RUN gem install \
         red-gandiva \
         red-parquet \
         red-plasma \
+        rumale \
         sqlite3 \
     && gem install --pre \
-           charty
+           charty \
     \
     && iruby register
