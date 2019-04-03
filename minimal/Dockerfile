@@ -1,4 +1,4 @@
-ARG BASE_IMAGE_TAG=185a9f74b296
+ARG BASE_IMAGE_TAG=65761486d5d3
 FROM jupyter/scipy-notebook:$BASE_IMAGE_TAG
 
 LABEL maintainer="Kenta Murata <mrkn@mrkn.jp>"
