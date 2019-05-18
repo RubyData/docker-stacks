@@ -1,13 +1,12 @@
 # Selecting an Image
 
-We have two Docker images followings:
+We have two Docker images:
 
 1. `rubydata/minimal-notebook`
 2. `rubydata/datascience-notebook`
 
 ## Ruby
 
-These two images contains same Ruby components for data science followings:
 These two images contain the same Ruby component for data science:
 
 - pry
@@ -28,7 +27,7 @@ These two images contain the same Ruby component for data science:
 
 ## `rubydata/minimal-notebook`
 
-`rubydata/minimal-notebook` consists of minimal components for data science using Ruby, Python.
+`rubydata/minimal-notebook` consists of minimal components for data science using Ruby and Python.
 This image also contains everything in [`jupyter/scipy-notebook`](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-scipy-notebook) and its ancestor images.
 
 ## `rubydata/datascience-notebook`
