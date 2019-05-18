@@ -8,6 +8,7 @@ We have two Docker images followings:
 ## Ruby
 
 These two images contains same Ruby components for data science followings:
+These two images contain the same Ruby component for data science:
 
 - pry
 - iruby
