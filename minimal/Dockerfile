@@ -51,6 +51,7 @@ RUN apt update && \
     apt install -y --no-install-recommends \
         libarrow-dev \
         libarrow-glib-dev \
+        libarrow-flight-dev \
         libplasma-dev \
         libplasma-glib-dev \
         libgandiva-dev \
