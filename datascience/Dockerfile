@@ -35,33 +35,6 @@ RUN apt-get update && \
             zlib1g-dev && \
     rm -rf /var/lib/apt/lists/*
 
-# Apache Arrow
-
-RUN apt update && \
-    apt install -y --no-install-recommends \
-        apt-transport-https \
-        lsb-release && \
-    curl -sfSL -o /usr/share/keyrings/apache-arrow-keyring.gpg \
-         https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/apache-arrow-keyring.gpg \
-    && { \
-        echo "deb [arch=amd64 signed-by=/usr/share/keyrings/apache-arrow-keyring.gpg] https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/ $(lsb_release --codename --short) main"; \
-        echo "deb-src [signed-by=/usr/share/keyrings/apache-arrow-keyring.gpg] https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/ $(lsb_release --codename --short) main"; \
-    } >> /etc/apt/sources.list.d/apache-arrow.list && \
-    apt update && \
-    apt install -y --no-install-recommends \
-        libarrow-dev \
-        libarrow-glib-dev \
-        libarrow-flight-dev \
-        libplasma-dev \
-        libplasma-glib-dev \
-        libgandiva-dev \
-        libgandiva-glib-dev \
-        libparquet-dev \
-        libparquet-glib-dev \
-        libgirepository1.0-dev \
-        && \
-    rm -rf /var/lib/apt/lists/*
-
 # Copy Ruby 2.6.2 from rubylang/ruby
 
 COPY --from=rubylang/ruby:2.6.2-bionic \
@@ -107,13 +80,23 @@ COPY --from=rubylang/ruby:2.6.2-bionic \
      /usr/local/share/man/man5/gemfile.5 \
      /usr/local/share/man/man5/
 
-USER $NB_UID
+# Install Apache Arrow and basic gems
 
-RUN echo "gem: --user-install" >> $HOME/.gemrc
-ENV PATH $HOME/.gem/ruby/2.6.0/bin:$PATH
-
-# Install basic gems
-RUN gem install \
+RUN apt update && \
+    apt install -y --no-install-recommends \
+        apt-transport-https \
+        lsb-release && \
+    curl -sfSL -o /usr/share/keyrings/apache-arrow-keyring.gpg \
+         https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/apache-arrow-keyring.gpg \
+    && { \
+        echo "deb [arch=amd64 signed-by=/usr/share/keyrings/apache-arrow-keyring.gpg] https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/ $(lsb_release --codename --short) main"; \
+        echo "deb-src [signed-by=/usr/share/keyrings/apache-arrow-keyring.gpg] https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/ $(lsb_release --codename --short) main"; \
+    } >> /etc/apt/sources.list.d/apache-arrow.list && \
+    apt update && \
+    apt install -y --no-install-recommends \
+        libgirepository1.0-dev \
+        && \
+    gem install \
         activerecord \
         awesome_print \
         daru \
@@ -147,5 +130,10 @@ RUN gem install \
         sqlite3 \
     && gem install --pre \
            charty \
-    \
-    && iruby register
+    && iruby register \
+    rm -rf /var/lib/apt/lists/*
+
+USER $NB_UID
+
+RUN echo "gem: --user-install" >> $HOME/.gemrc
+ENV PATH $HOME/.gem/ruby/2.6.0/bin:$PATH
