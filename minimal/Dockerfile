@@ -136,6 +136,7 @@ RUN gem install \
         red-arrow-numo-narray \
         red-arrow-nmatrix \
         red-chainer \
+        red-colors \
         red-datasets \
         red-datasets-arrow \
         red-datasets-daru \
