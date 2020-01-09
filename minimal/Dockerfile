@@ -115,6 +115,7 @@ ENV PATH $HOME/.gem/ruby/2.6.0/bin:$PATH
 RUN gem install \
         activerecord \
         awesome_print \
+        charty \
         daru \
         daru-view \
         ffi-rzmq \
@@ -144,7 +145,5 @@ RUN gem install \
         red-plasma \
         rumale \
         sqlite3 \
-    && gem install --pre \
-           charty \
     \
     && iruby register

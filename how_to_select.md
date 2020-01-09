@@ -24,6 +24,7 @@ These two images contain the same Ruby component for data science:
 - red-arrow-nmatrix
 - daru
 - rbplotly
+- charty
 
 ## `rubydata/minimal-notebook`
 
