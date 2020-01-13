@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: master
+    paths-ignore:
+    - 'README.md'
+    - 'docs/*'
+  pull_request:
+    paths-ignore:
+    - 'README.md'
+    - 'docs/*'
+
+jobs:
+  build_and_push:
+    strategy:
+      matrix:
+        image_base_name:
+        - minimal
+        - datascience
+    name: ${{ matrix.image_base_name }}-notebook
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Setup Ruby
+      uses: eregon/use-ruby-action@master
+      with:
+        ruby-version: 2.7
+    - name: Build
+      run: rake build/${{ matrix.image_base_name }}
+    - name: Tag
+      run: |
+        tag=$(git rev-parse --short ${GITHUB_SHA})
+        docker tag rubydata/${{ matrix.image_base_name }}-notebook:latest rubydata/${{ matrix.image_base_name }}-notebook:${tag}
+    - name: List images
+      run: docker images --format '{{.Repository}}:{{.Tag}}\t{{.ID}}'
+    - name: Push
+      if: github.event_name == 'push' && github.ref == 'master'
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSEORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: |
+        docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" https://index.docker.io/v1/
+        docker images --format '{{.Repository}}:{{.Tag}}' | grep rubydata/${{ matrix.image_base_name }}-notebook | while read image_name; do
+          echo "Pushing ${image_name}"
+          docker push ${image_name}
+        done

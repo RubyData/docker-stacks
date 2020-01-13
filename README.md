@@ -11,7 +11,7 @@ You can try the recent build of the RubyData/minimal-notebook image on mybinder.
 
 https://mybinder.org/v2/gh/RubyData/docker-stacks/master?filepath=README.ipynb
 
-Otherwise, you can launch a single Jupyter Notebook server in a Docker container.  Two Docker images are available. You can know which one is suitable for you in [this document](how_to_select.md).
+Otherwise, you can launch a single Jupyter Notebook server in a Docker container.  Two Docker images are available. You can know which one is suitable for you in [this document](docs/how_to_select.md).
 
 ## How to run on docker in your machine
 
