@@ -39,7 +39,7 @@ jobs:
       if: github.event_name == 'push'
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        DOCKER_PASSEORD: ${{ secrets.DOCKER_PASSWORD }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: |
         docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" https://index.docker.io/v1/
         docker images --format '{{.Repository}}:{{.Tag}}' | grep rubydata/${{ matrix.image_base_name }}-notebook | while read image_name; do
