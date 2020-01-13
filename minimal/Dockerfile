@@ -1,4 +1,4 @@
-ARG BASE_IMAGE_TAG=65761486d5d3
+ARG BASE_IMAGE_TAG=7a0c7325e470
 FROM jupyter/scipy-notebook:$BASE_IMAGE_TAG
 
 LABEL maintainer="Kenta Murata <mrkn@mrkn.jp>"
@@ -37,8 +37,8 @@ RUN apt-get update && \
 
 # Apache Arrow
 
-RUN apt update && \
-    apt install -y --no-install-recommends \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
         apt-transport-https \
         lsb-release && \
     curl -sfSL -o /usr/share/keyrings/apache-arrow-keyring.gpg \
@@ -47,8 +47,8 @@ RUN apt update && \
         echo "deb [arch=amd64 signed-by=/usr/share/keyrings/apache-arrow-keyring.gpg] https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/ $(lsb_release --codename --short) main"; \
         echo "deb-src [signed-by=/usr/share/keyrings/apache-arrow-keyring.gpg] https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/ $(lsb_release --codename --short) main"; \
     } >> /etc/apt/sources.list.d/apache-arrow.list && \
-    apt update && \
-    apt install -y --no-install-recommends \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
         libarrow-dev \
         libarrow-glib-dev \
         libplasma-dev \
