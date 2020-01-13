@@ -36,7 +36,7 @@ jobs:
     - name: List images
       run: docker images --format '{{.Repository}}:{{.Tag}}\t{{.ID}}'
     - name: Push
-      if: github.event_name == 'push' && github.ref == 'master'
+      if: github.event_name == 'push'
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSEORD: ${{ secrets.DOCKER_PASSWORD }}
