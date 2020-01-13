@@ -32,12 +32,12 @@ ALL_IMAGES.each do |image|
 
   desc "Build #{OWNER}/#{image} image"
   task "build/#{image}" => "pull/base_image/#{image}" do
-    sh "docker build #{DOCKER_FLAGS} --rm --force-rm -t #{OWNER}/#{image}:latest ./#{image}"
+    sh "docker build #{DOCKER_FLAGS} --rm --force-rm -t #{OWNER}/#{image}-notebook:latest ./#{image}"
   end
 
   desc "Push #{OWNER}/#{image} image"
   task "push/#{image}" do
-    sh "docker push #{OWNER}/#{image}:latest"
+    sh "docker push #{OWNER}/#{image}-notebook:latest"
   end
 end
 
