@@ -1,4 +1,4 @@
-ARG BASE_IMAGE_TAG=7a0c7325e470
+ARG BASE_IMAGE_TAG=29edefbcb06a
 FROM jupyter/datascience-notebook:$BASE_IMAGE_TAG
 
 LABEL maintainer="Kenta Murata <mrkn@mrkn.jp>"
