@@ -20,25 +20,29 @@ jobs:
         image_base_name:
         - minimal
         - datascience
+
     name: ${{ matrix.image_base_name }}-notebook
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v1
-    - name: Setup Ruby
-      uses: eregon/use-ruby-action@master
+    - uses: actions/checkout@v1
+
+    - uses: ruby/setup-ruby@master
       with:
-        ruby-version: 2.7
-    - name: Build
+        ruby-version: "3.0"
+
+    - name: Build images
       run: rake build/${{ matrix.image_base_name }}
+
     - name: Tag
       run: |
         tag=$(git rev-parse --short ${GITHUB_SHA})
         docker tag rubydata/${{ matrix.image_base_name }}-notebook:latest rubydata/${{ matrix.image_base_name }}-notebook:${tag}
+
     - name: List images
       run: docker images --format '{{.Repository}}:{{.Tag}}\t{{.ID}}'
-    - name: Push
-      if: github.event_name == 'push'
+
+    - name: Push images to DockerHub
+      if: github.ref == 'refs/heads/master'
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
