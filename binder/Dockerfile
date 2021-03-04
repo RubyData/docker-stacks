@@ -1,3 +1,3 @@
-FROM rubydata/minimal-notebook:e1a22a2
-ENV TAG=e1a22a2
+FROM rubydata/minimal-notebook:32416bcafb87
+ENV TAG=32416bcafb87
 Add binder/README.ipynb .
