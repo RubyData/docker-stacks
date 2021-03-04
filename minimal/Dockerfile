@@ -1,4 +1,4 @@
-ARG BASE_IMAGE_TAG=7a0c7325e470
+ARG BASE_IMAGE_TAG=29edefbcb06a
 FROM jupyter/scipy-notebook:$BASE_IMAGE_TAG
 
 LABEL maintainer="Kenta Murata <mrkn@mrkn.jp>"
@@ -61,45 +61,43 @@ RUN apt-get update && \
         && \
     rm -rf /var/lib/apt/lists/*
 
-# Copy Ruby 2.7.0 from rubylang/ruby
+# Copy Ruby 3.0.0 from rubylang/ruby
 
-COPY --from=rubylang/ruby:2.7.0-bionic \
+COPY --from=rubylang/ruby:3.0.0-focal \
      /usr/local/bin/bundle \
      /usr/local/bin/bundler \
      /usr/local/bin/erb \
      /usr/local/bin/gem \
      /usr/local/bin/irb \
      /usr/local/bin/racc \
-     /usr/local/bin/racc2y \
      /usr/local/bin/rake \
      /usr/local/bin/rdoc \
      /usr/local/bin/ri \
      /usr/local/bin/ruby \
-     /usr/local/bin/y2racc \
      /usr/local/bin/
 
-COPY --from=rubylang/ruby:2.7.0-bionic \
+COPY --from=rubylang/ruby:3.0.0-focal \
      /usr/local/etc/gemrc \
      /usr/local/etc/
 
-COPY --from=rubylang/ruby:2.7.0-bionic \
-     /usr/local/include/ruby-2.7.0/ \
-     /usr/local/include/ruby-2.7.0/
+COPY --from=rubylang/ruby:3.0.0-focal \
+     /usr/local/include/ruby-3.0.0/ \
+     /usr/local/include/ruby-3.0.0/
 
-COPY --from=rubylang/ruby:2.7.0-bionic \
+COPY --from=rubylang/ruby:3.0.0-focal \
      /usr/local/lib/libruby.so \
      /usr/local/lib/libruby.so.* \
      /usr/local/lib/
 
-COPY --from=rubylang/ruby:2.7.0-bionic \
+COPY --from=rubylang/ruby:3.0.0-focal \
      /usr/local/lib/pkgconfig/ \
      /usr/local/lib/pkgconfig/
 
-COPY --from=rubylang/ruby:2.7.0-bionic \
+COPY --from=rubylang/ruby:3.0.0-focal \
      /usr/local/lib/ruby/ \
      /usr/local/lib/ruby/
 
-COPY --from=rubylang/ruby:2.7.0-bionic \
+COPY --from=rubylang/ruby:3.0.0-focal \
      /usr/local/share/man/man1/bundle-*.1 \
      /usr/local/share/man/man1/bundle.1 \
      /usr/local/share/man/man1/erb.1 \
@@ -108,14 +106,14 @@ COPY --from=rubylang/ruby:2.7.0-bionic \
      /usr/local/share/man/man1/ruby.1 \
      /usr/local/share/man/man1/
 
-COPY --from=rubylang/ruby:2.7.0-bionic \
+COPY --from=rubylang/ruby:3.0.0-focal \
      /usr/local/share/man/man5/gemfile.5 \
      /usr/local/share/man/man5/
 
 USER $NB_UID
 
 RUN echo "gem: --user-install" >> $HOME/.gemrc
-ENV PATH $HOME/.gem/ruby/2.7.0/bin:$PATH
+ENV PATH $HOME/.local/share/gem/ruby/3.0.0/bin:$PATH
 
 # Install basic gems
 RUN gem install \
