@@ -35,7 +35,7 @@ jobs:
 
     - name: Tag
       run: |
-        tag=$(git rev-parse --short ${GITHUB_SHA})
+        tag=${GITHUB_SHA:0:12}
         docker tag rubydata/${{ matrix.image_base_name }}-notebook:latest rubydata/${{ matrix.image_base_name }}-notebook:${tag}
 
     - name: List images
