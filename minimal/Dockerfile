@@ -116,15 +116,18 @@ RUN echo "gem: --user-install" >> $HOME/.gemrc
 ENV PATH $HOME/.local/share/gem/ruby/3.0.0/bin:$PATH
 
 # Install basic gems
-RUN gem install \
+RUN gem install pycall -v ">= 1.4.0" && \
+    gem install matplotlib -v ">= 1.2.0" && \
+    gem install iruby -v ">= 0.7.0" && \
+    gem install \
         activerecord \
         awesome_print \
         charty \
         daru \
         daru-view \
+        enumerable-statistics \
         ffi-rzmq \
-        iruby \
-        matplotlib \
+        irb \
         mysql2 \
         nmatrix \
         nmatrix-lapacke \
@@ -135,7 +138,6 @@ RUN gem install \
         pg \
         pry \
         pry-doc \
-        pycall \
         rbplotly \
         red-arrow \
         red-arrow-numo-narray \
@@ -148,6 +150,7 @@ RUN gem install \
         red-parquet \
         red-plasma \
         rumale \
+        unicode_plot \
         sqlite3
 
 RUN iruby register
