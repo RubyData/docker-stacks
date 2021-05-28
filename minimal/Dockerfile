@@ -1,4 +1,4 @@
-ARG BASE_IMAGE_TAG=29edefbcb06a
+ARG BASE_IMAGE_TAG=65c71a997042
 FROM jupyter/scipy-notebook:$BASE_IMAGE_TAG
 
 LABEL maintainer="Kenta Murata <mrkn@mrkn.jp>"
@@ -37,18 +37,20 @@ RUN apt-get update && \
 
 # Apache Arrow
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+RUN apt update && \
+    apt install -y --no-install-recommends \
         apt-transport-https \
-        lsb-release && \
-    curl -sfSL -o /usr/share/keyrings/apache-arrow-keyring.gpg \
-         https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/apache-arrow-keyring.gpg \
-    && { \
-        echo "deb [arch=amd64 signed-by=/usr/share/keyrings/apache-arrow-keyring.gpg] https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/ $(lsb_release --codename --short) main"; \
-        echo "deb-src [signed-by=/usr/share/keyrings/apache-arrow-keyring.gpg] https://dl.bintray.com/apache/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/ $(lsb_release --codename --short) main"; \
-    } >> /etc/apt/sources.list.d/apache-arrow.list && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends \
+        lsb-release \
+        && \
+    \
+    curl -sfSL -o /tmp/apache-arrow-apt-source-latest.deb \
+         https://apache.jfrog.io/artifactory/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/apache-arrow-apt-source-latest-$(lsb_release --codename --short).deb && \
+    apt install -y --no-install-recommends \
+        /tmp/apache-arrow-apt-source-latest.deb && \
+    rm -f /tmp/apache-arrow-apt-source-latest.deb && \
+    \
+    apt update && \
+    apt install -y --no-install-recommends \
         libarrow-dev \
         libarrow-glib-dev \
         libplasma-dev \
@@ -59,11 +61,12 @@ RUN apt-get update && \
         libparquet-glib-dev \
         libgirepository1.0-dev \
         && \
+    \
     rm -rf /var/lib/apt/lists/*
 
-# Copy Ruby 3.0.0 from rubylang/ruby
+# Copy Ruby 3.0.1 from rubylang/ruby
 
-COPY --from=rubylang/ruby:3.0.0-focal \
+COPY --from=rubylang/ruby:3.0.1-focal \
      /usr/local/bin/bundle \
      /usr/local/bin/bundler \
      /usr/local/bin/erb \
@@ -76,43 +79,40 @@ COPY --from=rubylang/ruby:3.0.0-focal \
      /usr/local/bin/ruby \
      /usr/local/bin/
 
-COPY --from=rubylang/ruby:3.0.0-focal \
+COPY --from=rubylang/ruby:3.0.1-focal \
      /usr/local/etc/gemrc \
      /usr/local/etc/
 
-COPY --from=rubylang/ruby:3.0.0-focal \
+# NOTE: DO NOT CHANGE the version in the path of include directory
+COPY --from=rubylang/ruby:3.0.1-focal \
      /usr/local/include/ruby-3.0.0/ \
      /usr/local/include/ruby-3.0.0/
 
-COPY --from=rubylang/ruby:3.0.0-focal \
+COPY --from=rubylang/ruby:3.0.1-focal \
      /usr/local/lib/libruby.so \
      /usr/local/lib/libruby.so.* \
      /usr/local/lib/
 
-COPY --from=rubylang/ruby:3.0.0-focal \
+COPY --from=rubylang/ruby:3.0.1-focal \
      /usr/local/lib/pkgconfig/ \
      /usr/local/lib/pkgconfig/
 
-COPY --from=rubylang/ruby:3.0.0-focal \
+COPY --from=rubylang/ruby:3.0.1-focal \
      /usr/local/lib/ruby/ \
      /usr/local/lib/ruby/
 
-COPY --from=rubylang/ruby:3.0.0-focal \
-     /usr/local/share/man/man1/bundle-*.1 \
-     /usr/local/share/man/man1/bundle.1 \
+COPY --from=rubylang/ruby:3.0.1-focal \
      /usr/local/share/man/man1/erb.1 \
      /usr/local/share/man/man1/irb.1 \
      /usr/local/share/man/man1/ri.1 \
      /usr/local/share/man/man1/ruby.1 \
      /usr/local/share/man/man1/
 
-COPY --from=rubylang/ruby:3.0.0-focal \
-     /usr/local/share/man/man5/gemfile.5 \
-     /usr/local/share/man/man5/
-
 USER $NB_UID
 
 RUN echo "gem: --user-install" >> $HOME/.gemrc
+
+# NOTE: DO NOT CHANGE the version in the path of gem's bin directory
 ENV PATH $HOME/.local/share/gem/ruby/3.0.0/bin:$PATH
 
 # Install basic gems
@@ -148,6 +148,6 @@ RUN gem install \
         red-parquet \
         red-plasma \
         rumale \
-        sqlite3 \
-    \
-    && iruby register
+        sqlite3
+
+RUN iruby register
