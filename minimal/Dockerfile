@@ -142,6 +142,7 @@ RUN gem install pycall -v ">= 1.4.0" && \
         red-arrow \
         red-arrow-numo-narray \
         red-arrow-nmatrix \
+        red-arrow-pycall \
         red-chainer \
         red-datasets \
         red-datasets-arrow \
