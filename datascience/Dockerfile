@@ -1,4 +1,4 @@
-ARG BASE_IMAGE_TAG=65c71a997042
+ARG BASE_IMAGE_TAG=e6970b22a504
 FROM jupyter/datascience-notebook:$BASE_IMAGE_TAG
 
 LABEL maintainer="Kenta Murata <mrkn@mrkn.jp>"
@@ -53,6 +53,8 @@ RUN apt update && \
     apt install -y --no-install-recommends \
         libarrow-dev \
         libarrow-glib-dev \
+        libarrow-dataset-dev \
+        libarrow-flight-dev \
         libplasma-dev \
         libplasma-glib-dev \
         libgandiva-dev \
@@ -64,9 +66,9 @@ RUN apt update && \
     \
     rm -rf /var/lib/apt/lists/*
 
-# Copy Ruby 3.0.1 from rubylang/ruby
+# Copy Ruby 3.0.2 from rubylang/ruby
 
-COPY --from=rubylang/ruby:3.0.1-focal \
+COPY --from=rubylang/ruby:3.0.2-focal \
      /usr/local/bin/bundle \
      /usr/local/bin/bundler \
      /usr/local/bin/erb \
@@ -79,29 +81,29 @@ COPY --from=rubylang/ruby:3.0.1-focal \
      /usr/local/bin/ruby \
      /usr/local/bin/
 
-COPY --from=rubylang/ruby:3.0.1-focal \
+COPY --from=rubylang/ruby:3.0.2-focal \
      /usr/local/etc/gemrc \
      /usr/local/etc/
 
 # NOTE: DO NOT CHANGE the version in the path of include directory
-COPY --from=rubylang/ruby:3.0.1-focal \
+COPY --from=rubylang/ruby:3.0.2-focal \
      /usr/local/include/ruby-3.0.0/ \
      /usr/local/include/ruby-3.0.0/
 
-COPY --from=rubylang/ruby:3.0.1-focal \
+COPY --from=rubylang/ruby:3.0.2-focal \
      /usr/local/lib/libruby.so \
      /usr/local/lib/libruby.so.* \
      /usr/local/lib/
 
-COPY --from=rubylang/ruby:3.0.1-focal \
+COPY --from=rubylang/ruby:3.0.2-focal \
      /usr/local/lib/pkgconfig/ \
      /usr/local/lib/pkgconfig/
 
-COPY --from=rubylang/ruby:3.0.1-focal \
+COPY --from=rubylang/ruby:3.0.2-focal \
      /usr/local/lib/ruby/ \
      /usr/local/lib/ruby/
 
-COPY --from=rubylang/ruby:3.0.1-focal \
+COPY --from=rubylang/ruby:3.0.2-focal \
      /usr/local/share/man/man1/erb.1 \
      /usr/local/share/man/man1/irb.1 \
      /usr/local/share/man/man1/ri.1 \
@@ -116,18 +118,24 @@ RUN echo "gem: --user-install" >> $HOME/.gemrc
 ENV PATH $HOME/.local/share/gem/ruby/3.0.0/bin:$PATH
 
 # Install basic gems
-RUN gem install pycall -v ">= 1.4.0" && \
+RUN \
+    gem install irb -v ">= 1.3.8.pre.9" && \
+    gem install iruby -v ">= 0.7.4" && \
+    gem install pycall -v ">= 1.4.1" && \
+    gem install numpy -v ">= 0.4.0" && \
     gem install matplotlib -v ">= 1.2.0" && \
-    gem install iruby -v ">= 0.7.0" && \
+    gem install pandas -v ">= 0.3.8" && \
+    gem install charty -v ">= 0.2.11" && \
+    gem install red-datasets -v ">= 0.1.4" && \
+    gem install unicode_plot -v ">= 0.0.5" && \
+    \
     gem install \
         activerecord \
         awesome_print \
-        charty \
         daru \
         daru-view \
         enumerable-statistics \
         ffi-rzmq \
-        irb \
         mysql2 \
         nmatrix \
         nmatrix-lapacke \
@@ -143,14 +151,13 @@ RUN gem install pycall -v ">= 1.4.0" && \
         red-arrow-numo-narray \
         red-arrow-nmatrix \
         red-chainer \
-        red-datasets \
         red-datasets-arrow \
         red-datasets-daru \
+        red-datasets-pandas \
         red-gandiva \
         red-parquet \
         red-plasma \
         rumale \
-        unicode_plot \
         sqlite3
 
-RUN iruby register
+RUN iruby register --force
