@@ -150,6 +150,7 @@ RUN \
         red-arrow \
         red-arrow-numo-narray \
         red-arrow-nmatrix \
+        red-arrow-pycall \
         red-chainer \
         red-datasets-arrow \
         red-datasets-daru \
