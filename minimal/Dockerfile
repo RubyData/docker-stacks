@@ -37,6 +37,8 @@ RUN apt-get update && \
 
 # Apache Arrow
 
+ENV APACHE_ARROW_VERSION=8.0.0
+
 RUN apt update && \
     apt install -y --no-install-recommends \
         apt-transport-https \
@@ -66,9 +68,9 @@ RUN apt update && \
     \
     rm -rf /var/lib/apt/lists/*
 
-# Copy Ruby 3.0.2 from rubylang/ruby
+# Copy Ruby 3.1.2 from rubylang/ruby
 
-COPY --from=rubylang/ruby:3.0.2-focal \
+COPY --from=rubylang/ruby:3.1.2-focal \
      /usr/local/bin/bundle \
      /usr/local/bin/bundler \
      /usr/local/bin/erb \
@@ -81,29 +83,29 @@ COPY --from=rubylang/ruby:3.0.2-focal \
      /usr/local/bin/ruby \
      /usr/local/bin/
 
-COPY --from=rubylang/ruby:3.0.2-focal \
+COPY --from=rubylang/ruby:3.1.2-focal \
      /usr/local/etc/gemrc \
      /usr/local/etc/
 
 # NOTE: DO NOT CHANGE the version in the path of include directory
-COPY --from=rubylang/ruby:3.0.2-focal \
-     /usr/local/include/ruby-3.0.0/ \
-     /usr/local/include/ruby-3.0.0/
+COPY --from=rubylang/ruby:3.1.2-focal \
+     /usr/local/include/ruby-3.1.0/ \
+     /usr/local/include/ruby-3.1.0/
 
-COPY --from=rubylang/ruby:3.0.2-focal \
+COPY --from=rubylang/ruby:3.1.2-focal \
      /usr/local/lib/libruby.so \
      /usr/local/lib/libruby.so.* \
      /usr/local/lib/
 
-COPY --from=rubylang/ruby:3.0.2-focal \
+COPY --from=rubylang/ruby:3.1.2-focal \
      /usr/local/lib/pkgconfig/ \
      /usr/local/lib/pkgconfig/
 
-COPY --from=rubylang/ruby:3.0.2-focal \
+COPY --from=rubylang/ruby:3.1.2-focal \
      /usr/local/lib/ruby/ \
      /usr/local/lib/ruby/
 
-COPY --from=rubylang/ruby:3.0.2-focal \
+COPY --from=rubylang/ruby:3.1.2-focal \
      /usr/local/share/man/man1/erb.1 \
      /usr/local/share/man/man1/irb.1 \
      /usr/local/share/man/man1/ri.1 \
@@ -115,7 +117,7 @@ USER $NB_UID
 RUN echo "gem: --user-install" >> $HOME/.gemrc
 
 # NOTE: DO NOT CHANGE the version in the path of gem's bin directory
-ENV PATH $HOME/.local/share/gem/ruby/3.0.0/bin:$PATH
+ENV PATH $HOME/.local/share/gem/ruby/3.1.0/bin:$PATH
 
 # Install basic gems
 RUN \
@@ -149,7 +151,7 @@ RUN \
         rbplotly \
         red-arrow \
         red-arrow-numo-narray \
-        red-arrow-nmatrix \
+        # red-arrow-nmatrix \
         red-chainer \
         red-datasets-arrow \
         red-datasets-daru \
