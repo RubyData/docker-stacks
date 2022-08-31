@@ -37,7 +37,7 @@ RUN apt-get update && \
 
 # Apache Arrow
 
-ENV APACHE_ARROW_VERSION=8.0.0
+ENV APACHE_ARROW_VERSION=9.0.0
 
 RUN apt update && \
     apt install -y --no-install-recommends \
