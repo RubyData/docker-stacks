@@ -148,6 +148,7 @@ RUN \
         pry \
         pry-doc \
         rbplotly \
+        red_amber \
         red-arrow \
         red-arrow-numo-narray \
         red-chainer \
