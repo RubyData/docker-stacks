@@ -126,7 +126,7 @@ RUN \
     gem install numpy -v ">= 0.4.0" && \
     gem install matplotlib -v ">= 1.2.0" && \
     gem install pandas -v ">= 0.3.8" && \
-    gem install charty -v ">= 0.2.11" && \
+    gem install charty -v ">= 0.2.12" && \
     gem install red-datasets -v ">= 0.1.4" && \
     gem install unicode_plot -v ">= 0.0.5" && \
     \
