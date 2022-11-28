@@ -1,4 +1,4 @@
-ARG BASE_IMAGE_TAG=2ace7f71087a
+ARG BASE_IMAGE_TAG=f3079808ca8c
 FROM jupyter/datascience-notebook:$BASE_IMAGE_TAG
 
 LABEL maintainer="Kenta Murata <mrkn@mrkn.jp>"
@@ -37,7 +37,7 @@ RUN apt-get update && \
 
 # Apache Arrow
 
-ENV APACHE_ARROW_VERSION=9.0.0
+ENV APACHE_ARROW_VERSION=10.0.0
 RUN apt update && \
     apt install -y --no-install-recommends \
         apt-transport-https \
@@ -67,9 +67,9 @@ RUN apt update && \
     \
     rm -rf /var/lib/apt/lists/*
 
-# Copy Ruby 3.1.2 from rubylang/ruby
+# Copy Ruby 3.1.3 from rubylang/ruby
 
-COPY --from=rubylang/ruby:3.1.2-focal \
+COPY --from=rubylang/ruby:3.1.3-focal \
      /usr/local/bin/bundle \
      /usr/local/bin/bundler \
      /usr/local/bin/erb \
@@ -82,29 +82,29 @@ COPY --from=rubylang/ruby:3.1.2-focal \
      /usr/local/bin/ruby \
      /usr/local/bin/
 
-COPY --from=rubylang/ruby:3.1.2-focal \
+COPY --from=rubylang/ruby:3.1.3-focal \
      /usr/local/etc/gemrc \
      /usr/local/etc/
 
 # NOTE: DO NOT CHANGE the version in the path of include directory
-COPY --from=rubylang/ruby:3.1.2-focal \
+COPY --from=rubylang/ruby:3.1.3-focal \
      /usr/local/include/ruby-3.1.0/ \
      /usr/local/include/ruby-3.1.0/
 
-COPY --from=rubylang/ruby:3.1.2-focal \
+COPY --from=rubylang/ruby:3.1.3-focal \
      /usr/local/lib/libruby.so \
      /usr/local/lib/libruby.so.* \
      /usr/local/lib/
 
-COPY --from=rubylang/ruby:3.1.2-focal \
+COPY --from=rubylang/ruby:3.1.3-focal \
      /usr/local/lib/pkgconfig/ \
      /usr/local/lib/pkgconfig/
 
-COPY --from=rubylang/ruby:3.1.2-focal \
+COPY --from=rubylang/ruby:3.1.3-focal \
      /usr/local/lib/ruby/ \
      /usr/local/lib/ruby/
 
-COPY --from=rubylang/ruby:3.1.2-focal \
+COPY --from=rubylang/ruby:3.1.3-focal \
      /usr/local/share/man/man1/erb.1 \
      /usr/local/share/man/man1/irb.1 \
      /usr/local/share/man/man1/ri.1 \
