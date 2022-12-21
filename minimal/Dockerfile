@@ -160,6 +160,7 @@ RUN \
         red-gandiva \
         red-parquet \
         red-plasma \
+        rover-df \
         rumale \
         sqlite3
 
